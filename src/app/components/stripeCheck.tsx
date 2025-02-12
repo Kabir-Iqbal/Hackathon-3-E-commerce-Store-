@@ -58,9 +58,13 @@ const StripeCheck = ({amount} : {amount : number} ) => {
             elements,
             clientSecret,
             confirmParams: {
-                return_url: `${URL}/payment-success`
+                return_url: `${URL}/payment-success?amount=${amount}`
             }
         })
+         if (!error) {
+            window.location.href = `${URL}/payment-success?amount=${amount}`;
+        }
+        
 
         if (error) {
             setError(error.message)
