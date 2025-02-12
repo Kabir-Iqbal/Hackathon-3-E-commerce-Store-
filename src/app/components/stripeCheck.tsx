@@ -58,7 +58,7 @@ const StripeCheck = ({amount} : {amount : number} ) => {
             elements,
             clientSecret,
             confirmParams: {
-                return_url: `${URL}/payment-success?amount=${amount}`
+                return_url: `${URL}/payment-success`
             }
         })
 
