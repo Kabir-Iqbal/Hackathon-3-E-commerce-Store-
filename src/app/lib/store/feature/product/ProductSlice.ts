@@ -1,31 +1,27 @@
-// checkoutSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface Product {
-  name: string;
-  price: number;
-  image: string;
-  quantity : number;
-  id : number
+
+interface ProductState {
+  filteredProducts: any[]; // Define type properly
 }
 
-interface CheckoutState {
-  products: Product[];
-}
-
-const initialState: CheckoutState = {
-  products: [],
+// reducer.js
+const initialState : ProductState = {
+  filteredProducts: []
 };
 
-const checkoutSlice = createSlice({
-  name: 'checkout',
-  initialState,
-  reducers: {
-    setCheckoutData: (state, action: PayloadAction<Product[]>) => {
-      state.products = action.payload;
-    },
-  },
-});
+export const productSlice = createSlice({
+  name : "products",
+  initialState ,
+  reducers : {
+    SetFilteredProducts : (state, action: PayloadAction<any[]>) => {
+      state.filteredProducts = action.payload
+      console.log("Data in Redux_slice", state.filteredProducts);
+      
+    }
+  }
+})
 
-export const { setCheckoutData } = checkoutSlice.actions;
-export default checkoutSlice.reducer;
+export const { SetFilteredProducts } = productSlice.actions; // Export action
+
+export default productSlice.reducer;

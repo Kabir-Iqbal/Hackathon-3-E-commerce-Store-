@@ -20,7 +20,6 @@ const StripePayment = () => {
 
     const amount = useAppSelector((state) => state.amount.totalAmount);
 
-
     //  const amount = 99.79
   return (
     <div>
@@ -29,7 +28,8 @@ const StripePayment = () => {
                 options={{
                     mode: 'payment',
                     amount: convertToSubCurrency(amount),
-                    currency: 'usd'
+                    currency: 'usd',
+                 
                 }}
             >
                 <StripeCheck amount={amount} />

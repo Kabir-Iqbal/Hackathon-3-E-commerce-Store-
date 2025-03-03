@@ -21,6 +21,8 @@ import Link from "next/link";
 import { client } from "@/sanity/lib/client";
 import { usePathname } from "next/navigation";
 
+import { useRouter } from "next/navigation";
+
 
 function Header() {
 
@@ -47,6 +49,8 @@ function Header() {
   const tooglesearch = () => {
     setSearchbaropen(!searcbaropen)
   }
+
+  const router = useRouter()
 
   //storing data
   const [Data, setData] = useState<any>([])
@@ -77,7 +81,7 @@ function Header() {
 
 
   // managing searchBar
-  const [searchingData, setSearchingData] = useState<any>()
+  const [searchQuery, setSearchQuery] = useState<any>()
 
   const [filteredData, setFilteredData] = useState([])
 
@@ -85,11 +89,11 @@ function Header() {
   const handlesubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const result = Data.filter((item: any) => {
-      item.name.toLowerCase().includes(searchingData?.toLowerCase())
-      // item.category?.name.toLowerCase().includes(searchingData?.toLowerCase())
-    })
-    setFilteredData(result)
+    if (!searchQuery) return;
+
+    // User ko search-result page par bhejo query ke sath
+    router.push(`/searchResult?query=${searchQuery}`);    //sending input with the query .
+
   }
 
   console.log("filtered data", filteredData)
@@ -108,8 +112,8 @@ function Header() {
                     className="w-[150px] text-[14px] rounded-md  px-1 border-gray-400 border-[1px]"
                     type="text"
                     placeholder="Search..."
-                    value={searchingData}
-                    onChange={(e) => setSearchingData(e.target.value)} />
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)} />
                   <button type="submit" className="text-[15px] my-auto mx-auto font-semibold text-gray-800 ">Search</button>
                 </form>
               </div>
@@ -122,33 +126,33 @@ function Header() {
 
           <div className=" md:w-1/3  justify-end flex order-3 gap-3 text-2xl z-50 absolute right-14 md:flex md:static cursor-pointer  " >
 
-          <div className="flex md:hidden  gap-1 items-center  text-end  order-1  z-50     font-Clash ">
-            {!searcbaropen && (
-              <div className="absolute flex gap-2 top-[50px] left-[-25%] md:static md:block w-[248px]  bg-white border-[#22202E] ">
-                <form className="flex gap-[1px]" onSubmit={handlesubmit} >
-                  <input
-                    className="w-[150px] text-[14px] rounded-md  px-1 border-gray-400 border-[1px]"
-                    type="text"
-                    placeholder="Search..."
-                    value={searchingData}
-                    onChange={(e) => setSearchingData(e.target.value)} />
-                  <button type="submit" className="text-[15px] my-auto mx-auto font-semibold text-gray-800 ">Search</button>
-                </form>
-              </div>
-            )}
-            <CiSearch onClick={tooglesearch} className="order-2 text-2xl cursor-pointer  z-50 block md:static  md:block  font-Clash " />
-          </div>
+            <div className="flex md:hidden  gap-1 items-center  text-end  order-1  z-50     font-Clash ">
+              {!searcbaropen && (
+                <div className="absolute flex gap-2 top-[50px] left-[-25%] md:static md:block w-[248px]  bg-white border-[#22202E] ">
+                  <form className="flex gap-[1px]" onSubmit={handlesubmit} >
+                    <input
+                      className="w-[150px] text-[14px] rounded-md  px-1 border-gray-400 border-[1px]"
+                      type="text"
+                      placeholder="Search..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)} />
+                    <button type="submit" className="text-[15px] my-auto mx-auto font-semibold text-gray-800 ">Search</button>
+                  </form>
+                </div>
+              )}
+              <CiSearch onClick={tooglesearch} className="order-2 text-2xl cursor-pointer  z-50 block md:static  md:block  font-Clash " />
+            </div>
 
-           
-              <div className="relative order-2  "  >
+
+            <div className="relative order-2  "  >
               <Link href="./cart"  >
                 <GrCart />
                 <span className=" absolute bg-[#2A254B] text-white -top-3 -right-2 h-[18px] w-[18px] flex items-center justify-center rounded-full text-[14px]   " >
                   {itemid.length}
                 </span>
-                </Link>
-              </div>
-           
+              </Link>
+            </div>
+
 
 
             <div className=" flex gap-1 mx-1 items-center order-3 " >

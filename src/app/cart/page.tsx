@@ -15,12 +15,13 @@ import Link from "next/link";
 
 //  redux manage total amount
 import { addTotalAmount } from "../lib/store/feature/amount/AmountSlice";
-import { setCheckoutData } from "../lib/store/feature/product/ProductSlice";
+import {SetFilteredProducts} from "../lib/store/feature/product/ProductSlice"
 
 
 
 
 function Cart() {
+
   //storing data
   const [Data, setData] = useState([])
 
@@ -54,63 +55,42 @@ function Cart() {
 
   }, [])
 
-
   const Product: any = Data
-
-  const product = Product.map((items: any) => items)
   const data = useAppSelector(state => state.cart.item)
 
-  // const amount = useAppSelector(amount => amount.cart.amount )
-  // const quantity = useAppSelector(quantity => quantity.cart.quantity )
+  const filteredProducts = Product.map((product: any) => {
+                            //  Cart item slug                          product slug
+    const matchingCartItem = data.find(cartItem => cartItem.slug === product.slug.current);   
+    return matchingCartItem 
+    ? { ...product, quantity: matchingCartItem.quantity }  // matched product with quantity
+    : null;
+}).filter(Boolean);  // null values کو remove کرنے کے لیے
 
-  const dataofProductID = data.map((productdata) => productdata.slug)
-  const ProductQuantity: number[] = data.map((quantity) => quantity.quantity)
 
-  const filteredProducts = Product.filter((product: any) => dataofProductID.includes(product.slug.current))
- 
+   const dispatch = useAppDispatch()
+
+   if (filteredProducts.length > 0) {
+     const simplifiedProducts : any = filteredProducts.map((product: any) => ({
+        name: product.name,
+        image: product.image,
+        price : product.price,
+        quantity : product.quantity
+      }));
+
+      console.log("Dispatching products: ", simplifiedProducts);
+      dispatch(SetFilteredProducts(simplifiedProducts)); // Dispatch to Redux store
+   }
+
 
    
   // Total amount
   const totalAmount = filteredProducts.reduce((sum: any, product: any, index: any) => {
-    const quantity = ProductQuantity[index];
-    return (sum + product.price * quantity)
+    return (sum + product.price * product.quantity)
 
   }, 0)
 
   
-  const dispatch = useAppDispatch()
-//   // CheckOut Data Management 
-//   const [checkoutData, setChechoutData] = useState<any>([])
-//   console.log("Checkout Data: ", checkoutData);
-
-//   
-   
-// useEffect(() => {
-//   const Products: any = {
-//     product: filteredProducts.map((product: any) => ({
-//       name: product.name,
-//       price: product.price,
-//       image: product.image,
-//       quantity : product.quantity,
-//       id : product.id
-//     })),
-//   };
-//   console.log("Products: ", Products);
-
-//   // Redux aur local state dono ek saath update honge
-//   if (JSON.stringify(Products) !== JSON.stringify(checkoutData)) {
-//     setChechoutData(Products); // Local state update
-//     dispatch(setCheckoutData(Products)); // Redux update
-//   }
-// }, [filteredProducts, dispatch]);
-
-
-
   
-
-
-
-
   
   const HandletoRemove = (productslug: string) => {
     dispatch(remove(productslug))
@@ -148,8 +128,7 @@ function Cart() {
             <div>
               {filteredProducts.map((product: any, index: any) => {
 
-                const quantity2 = ProductQuantity[index]
-                const total = product.price * quantity2
+                
 
 
 
@@ -166,16 +145,16 @@ function Cart() {
 
                         <div className="my-5 flex flex-col justify-between text-[#2A254B] " >
                           <h2 className=" text-[13px] md:[18px] lg:text-[20px] leading-[28pxx] font-Clash " >{product.name} </h2>
-                          <h3 className=" text-[13px] sm:text-[16px] leading-[24px] " > {`\u00A3${product.price}`}</h3>
+                          <h3 className=" text-[13px] sm:text-[16px] leading-[24px] " > {`$${product.price}`}</h3>
                         </div>
                       </div>
 
                       <div className="flex h-full flex-col text-center md:text-start " >
-                        <h1 className="  mt-5   " >{quantity2} </h1>
+                        <h1 className="  mt-5   " >{product.quantity } </h1>
                       </div>
 
 
-                      <h1 className=" text-end mt-5" > {`\u00A3 ${total} `} </h1>
+                      <h1 className=" text-end mt-5" > {`$${product.quantity * product.price} `} </h1>
 
 
                     </div>
@@ -194,7 +173,7 @@ function Cart() {
                   <p className="order-2 md:order-1 text-[#2A254B] text-sm sm:text-[14px] text-end md:text-start " >Taxes and shipping are calculated at checkout</p>
 
                   <div className="order-1 md:order-2" >
-                    <p className=" text-end md:text-start text-[20px] text-[#4E4D93] mx-5 " >Subtotal <span className=" mr-1 text-[24px] " >  {`\u00A3${totalAmount}`}</span> </p>
+                    <p className=" text-end md:text-start text-[20px] text-[#4E4D93] mx-5 " >Subtotal <span className=" mr-1 text-[24px] " >  {`$${totalAmount}`}</span> </p>
                   </div>
 
                 </div>
@@ -213,3 +192,5 @@ function Cart() {
   )
 }
 export default Cart
+
+

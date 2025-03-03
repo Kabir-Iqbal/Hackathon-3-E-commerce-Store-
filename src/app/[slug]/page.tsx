@@ -158,7 +158,7 @@ const Page = (props: any) => {
                         {/* left */}
                         <div className="flex-1 flex flex-col gap-2 my-10 ">
                             <h1 className="font-bold " > {product.name} </h1>
-                            <p>{`\u00A3 ${product.price}`} </p>
+                            <p>{`$${product.price}`} </p>
                             <div className="text-[#505977] flex flex-col gap-3   " >
                                 <p >Description</p>
                                 <p>{product.description}</p>
@@ -193,7 +193,7 @@ const Page = (props: any) => {
                                 <div className=" flex justify-between  " >
                                     {/* right */}
                                     <div className="flex flex-col px-2 sm:px-5 sm:flex-row gap-5 mt-10 items-center">
-                                        <h2 className=" text-[14px] sm:text-18px  " > Amount: <span className="ml-2 " > {`\u00A3 ${product.price * number}`} </span>  </h2>
+                                        <h2 className=" text-[14px] sm:text-18px  " > Amount: <span className="ml-2 " > {`$${product.price * number}`} </span>  </h2>
                                         <div className="flex gap-5 px-3 py-2 bg-gray-200 " >
                                             <button className="text-lg" onClick={decrement} > <TiMinus /> </button>
                                             <h2>{number} </h2>
@@ -242,7 +242,7 @@ const Page = (props: any) => {
 
                                             <div className='text-sm gap-1 text-[#2A254B] flex flex-col my-2 px-1 ' >
                                                 {product.name}
-                                                <p  > {product.price} </p>
+                                                <p  >{`$${product.price}`} </p>
                                             </div>
 
                                         </div>

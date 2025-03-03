@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import cartReducer from "./feature/cart/CartSlice"
 import sanityReducer from "./feature/sanityData/SanitySlice"
 import amountReducer from "./feature/amount/AmountSlice"
-import checkoutReducer from "./feature/product/ProductSlice"
+import productReducer from "./feature/product/ProductSlice" 
 
 
 
@@ -14,7 +14,7 @@ export const makeStore = () => {
         cart : cartReducer,
         sanityData : sanityReducer,
         amount : amountReducer,
-        product : checkoutReducer,
+        products: productReducer,  // ✅ Adding reducer to store
 
     },
   })
@@ -25,6 +25,8 @@ export type AppStore = ReturnType<typeof makeStore>
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<AppStore['getState']>
 export type AppDispatch = AppStore['dispatch']
+
+
 
 
 

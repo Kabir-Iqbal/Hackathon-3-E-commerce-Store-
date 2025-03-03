@@ -27,17 +27,19 @@ import { set } from "sanity";
 
 
 const Page = () => {
- //storing data
- const [Data, setData] = useState([])
+  //storing data
+  const [Data, setData] = useState([])
 
- //import data from sanity
- useEffect(() => {
-   const fetchProducts = async () => {
+  const [selectedPrices, setSelectedPrices] = useState<string[]>([])
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    try {
-      
-   
-     const data = await client.fetch(`*[_type == "product"] {
+  //import data from sanity
+  useEffect(() => {
+    const fetchProducts = async () => {
+
+      try {
+        const data = await client.fetch(`*[_type == "product"] {
                category,
                name,
                slug,
@@ -50,42 +52,17 @@ const Page = () => {
                dimensions,
                }`)
 
-     setData(data)
-    } catch (error) {
+        setData(data)
+      } catch (error) {
         return <div> <p>Failed to fetch </p> console.log(error);
         </div>
-        
+
+      }
     }
-   }
 
-   fetchProducts()
+    fetchProducts()
 
- }, [])
-
-
-  // Trying to Get Data from Redux
-  // const Data = useAppSelector((state) => state.sanityData.products);
-  // const loading = useAppSelector((state) => state.sanityData.loading);
-  // const error = useAppSelector((state) => state.sanityData.error);
-
-  // useEffect(() => {
-  //   console.log("Products from Redux state:", Data);  // Log to see if products are in state
-  // }, [Data]);
-
-  // // const Data  = useAppSelector(state => state.sanityData.products)
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>Error: {error}</div>;
-  // }
-
-  // if (Data) {
-  //   console.log("Data Fetched SuccessFull");
-
-  // };
+  }, [])
 
 
   const [showOptions, SetShowOptions] = useState({
@@ -100,7 +77,6 @@ const Page = () => {
     SetShowOptions((prev) => ({ ...prev, [key]: !prev[key] }))
   }
 
-  const Product = Data
 
   // responsive
   const [showlinks, SetShowlinks] = useState(false)
@@ -114,7 +90,7 @@ const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalpages = Math.ceil(Data.length / ITEMS_PER_PAGE)
 
-  const currentpages = Data.slice(
+  const currentpages = filteredData.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -123,6 +99,43 @@ const Page = () => {
     setCurrentPage(page);
   };
 
+  const HandlePriceChange = (priceRange: string) => {
+    setSelectedPrices((prev: any) =>
+      prev.includes(priceRange) ? prev.filter((p: any) => p !== priceRange) : [...prev, priceRange]
+    );
+
+  }
+  // Apply filtering
+  useEffect(() => {
+    if (selectedPrices.length === 0) {
+      setFilteredData(Data);
+    } else {
+      setFilteredData(
+        Data.filter((product: any) => {
+          const price = product.price;
+          return selectedPrices.some((range) => {
+            const [min, max] = range.split("-").map(Number);
+            return price >= min && price <= max;
+          });
+        })
+      );
+    }
+  }, [selectedPrices, Data]);
+
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
+    );
+  };
+
+  useEffect(() => {
+    if (selectedCategories.length === 0) {
+      setFilteredData(Data);
+    } else {
+      setFilteredData(Data.filter((product: any) => selectedCategories.includes(product.category)));
+    }
+  }, [selectedCategories, Data]);
 
 
 
@@ -167,19 +180,24 @@ const Page = () => {
             {showOptions.Category && (
               <div className="flex flex-col gap-3" >
                 <label htmlFor="Accessories"  >
-                  <input type="Checkbox" id="Accessories" /> <span> Accessories</span>
+                  <input type="Checkbox" id="Accessories" checked={selectedCategories.includes("Accessories")}
+                    onChange={() => handleCategoryChange("Accessories")} /> <span> Accessories</span>
                 </label>
 
                 <label htmlFor="Outdoor furniture">
-                  <input type="Checkbox" id="Outdoor furniture" /> <span>Outdoor Furniture</span>
+                  <input type="Checkbox" id="Outdoor furniture" checked={selectedCategories.includes("Outdoor furniture")}
+                    onChange={() => handleCategoryChange("Outdoor furniture")} /> <span>Outdoor Furniture</span>
                 </label>
 
                 <label htmlFor="Office">
-                  <input type="Checkbox" id="Office" /> <span>Office Furniture </span>
+                  <input type="checkbox" id="Office" checked={selectedCategories.includes("Office")}
+                    onChange={() => handleCategoryChange("Office")} /> <span>Office Furniture </span>
                 </label>
 
                 <label htmlFor="Home & Kitchen">
-                  <input type="Checkbox" id="Home & Kitchen" /> <span>Home & Kitchen </span>
+                  <input type="checkbox" id="Home & Kitchen" checked={selectedCategories.includes("Home & Kitchen")}
+                    onChange={() => handleCategoryChange("Home & Kitchen")}
+                  /> <span>Home & Kitchen </span>
                 </label>
               </div>
             )}
@@ -220,15 +238,15 @@ const Page = () => {
             {showOptions.Price && (
               <div className="flex flex-col gap-3" >
                 <label htmlFor="price 100 to 300">
-                  <input type="Checkbox" id="price 100 to 300" /> <span>£100 to £300 </span>
+                  <input type="checkbox" id="price 100 to 300" onChange={() => HandlePriceChange("100-300")} checked={selectedPrices.includes("100-300")} /> <span>$100 to $300 </span>
                 </label>
 
                 <label htmlFor="price 300 to 800">
-                  <input type="Checkbox" id="price 300 to 800" /> <span>£300 to £800 </span>
+                  <input type="checkbox" id="price 300 to 800" onChange={() => HandlePriceChange("300-800")} checked={selectedPrices.includes("300-800")} /> <span>$300 to $800 </span>
                 </label>
 
                 <label htmlFor="price 800 to 5000">
-                  <input type="Checkbox" id="price 800 to 5000" /> <span>£800 to £5000 </span>
+                  <input type="checkbox" id="price 800 to 5000" onChange={() => HandlePriceChange("800-5000")} checked={selectedPrices.includes("800-5000")} /> <span>$800 to $5000 </span>
                 </label>
               </div>
             )}
@@ -298,24 +316,28 @@ const Page = () => {
 
       {/* first line products */}
 
-      <div className=" w-[90%] mx-auto grid grid-cols-2  md:grid-cols-4 gap-6 my-8 font-Clash " >
-
-        {currentpages.map((product: any) => {
-          return (
-            <Link key={product.slug} href={`${product.slug.current}`}>
-              <div className='flex flex-col h-[300px] sm:h-[320px] md:h-96 w-full   bg-gray-100 shadow-sm shadow-black  0 cursor-pointer group overflow-hidden ' >
-                <div className='w-full mx-auto ' >
-                  <Image className=' w-full object-cover  h-[212px] sm:h-[245px] md:h-72 group-hover:scale-105 transition-transform duration-200 ' src={product.image} alt={product.name} width={300} height={150} />
-                </div>
-                <div className='text-sm gap-1 text-[#2A254B] flex flex-col my-2 px-1 ' >
-                  {product.name}
-                  <p  > {`\u00A3 ${product.price} `}  </p>
-                </div>
-
+      <div className="w-[95%] mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 my-8 font-Clash">
+        {currentpages.map((product: any) => (
+          <Link key={product.slug} href={`${product.slug.current}`} className="group">
+            <div className="w-full mx-auto p-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+              {/* Image Section */}
+              <div className="w-full overflow-hidden rounded-lg">
+                <Image
+                  className="w-full object-cover h-[180px] sm:h-[220px] md:h-72 group-hover:scale-105 transition-transform duration-300"
+                  src={product.image}
+                  alt={product.name}
+                  width={300}
+                  height={150}
+                />
               </div>
-            </Link>
-          )
-        })}
+              {/* Text Section */}
+              <div className="text-sm text-[#2A254B] flex flex-col items-center my-2 px-1 text-center font-medium">
+                <p>{product.name}</p>
+                <p className="text-[#6B7280] text-base font-semibold">${product.price}</p>
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
 
 

@@ -152,7 +152,7 @@ function Hero() {
 
                                             <div className='text-sm gap-1 h-[20%] sm:h-[30%] text-[#2A254B] flex flex-col my-2 px-1 ' >
                                                 {product.name}
-                                                <p  > {`\u00A3 ${ product.price} `} </p>
+                                                <p  > {`$${ product.price} `} </p>
                                             </div>
 
                                         </div>
@@ -188,7 +188,7 @@ function Hero() {
 
                                 <div className='text-sm gap-1  text-[#2A254B] flex flex-col my-2 px-1 ' >
                                       {product2.name}
-                                    <p  > {product2.price} </p>
+                                    <p  > {`$${product2.price}`} </p>
                                 </div>
                             </Link>
                        
@@ -208,7 +208,7 @@ function Hero() {
 
                                                 <div className='text-sm gap-1 h-[20%] sm:h-[25%] text-[#2A254B] flex flex-col my-2 px-1 ' >
                                                     {product2.name}
-                                                    <p  >{`\u00A3 ${ product2.price} `}  </p>
+                                                    <p  >{`$${ product2.price} `}  </p>
                                                 </div>
                                             </div>
 
