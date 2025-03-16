@@ -36,7 +36,7 @@ const StripeCheck = ({ amount }: { amount: number }) => {
         if (typeof window !== 'undefined') {
             setURL(window.location.host === 'localhost:3000'
                 ? 'http://localhost:3000'
-                : 'https://hackathon-3-e-commerce-store.vercel.app/payment-success');
+                : 'https://hackathon-3-e-commerce-store.vercel.app');
         }
     }, []);
 
@@ -76,24 +76,106 @@ const StripeCheck = ({ amount }: { amount: number }) => {
     }, [userId, userName, userEmail, Products, clientSecret]);  // ✅ جب تینوں ویلیوز سیٹ ہوں تبھی API کال ہو۔
 
 
+   
+    // const fetchClientSecret = async () => {
+    //     if (clientSecret) return;
+
+    //     try {
+    //         const response = await fetch('/api/payment-intent', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({
+    //                 amount: convertToSubCurrency(amount),
+    //                 userId,
+    //                 userName,
+    //                 userEmail,
+    //                 Data: Products,
+    //                 paymentStatus
+    //             })
+    //         });
+
+    //         if (!response.ok) {
+    //             setError('Failed to fetch client secret');
+    //             return;
+    //         }
+
+    //         const data = await response.json();
+    //         setClientSecret(data.clientSecret);
+    //         sessionStorage.setItem('paymentIntentId', data.paymentintentId);   // save OrderId in session storage through the client component
+    //     } catch (error) {
+    //         setError('Failed to fetch client secret');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
+    // useEffect(() => {
+    //     if (userId.trim() && userName.trim() && userEmail.trim()) {
+    //         fetchClientSecret();
+    //     }
+    // }, [userId, userName, userEmail]);
+    
  
 
+    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault()
+
+    //     if (!stripe || !elements) {
+    //         setError("Stripe or elements are not yet initialized.")
+    //         return
+    //     }
+
+    //     setPaymentStatus('Processing...')
+    //     const { error: submitErrors } = await elements.submit()
+    //     if (submitErrors) {
+    //         setError(submitErrors.message)
+    //         setPaymentStatus('idle')
+    //         return
+    //     }
+
+    //     const { error } = await stripe.confirmPayment({
+    //         elements,
+    //         clientSecret,
+    //         confirmParams: {
+    //             return_url: `${URL}/payment-success?amount=${amount}`
+    //         },
+    //         redirect: "if_required"
+    //     })
+
+    //     if (error) {
+    //         setError(error.message);
+    //         setPaymentStatus('idle');
+    //     } else {
+    //         setError('');
+    //         setPaymentStatus('Successed');
+    //         setTimeout(() => {
+    //             router.push(`${URL}/payment-success?amount=${amount}`); // ✅ Next.js ka `router.push()` use kiya hai
+    //         },);
+    //     }
+    // };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-
+        e.preventDefault();
+    
         if (!stripe || !elements) {
-            setError("Stripe or elements are not yet initialized.")
-            return
+            setError("Stripe or elements are not yet initialized.");
+            return;
         }
-
-        setPaymentStatus('Processing...')
-        const { error: submitErrors } = await elements.submit()
+    
+        if (!clientSecret) {
+            setError("Payment cannot be processed at the moment. Please try again later.");
+            return;
+        }
+    
+        setPaymentStatus('Processing...');
+        const { error: submitErrors } = await elements.submit();
         if (submitErrors) {
-            setError(submitErrors.message)
-            setPaymentStatus('idle')
-            return
+            setError(submitErrors.message);
+            setPaymentStatus('idle');
+            return;
         }
-
+    
         const { error } = await stripe.confirmPayment({
             elements,
             clientSecret,
@@ -101,8 +183,8 @@ const StripeCheck = ({ amount }: { amount: number }) => {
                 return_url: `${URL}/payment-success?amount=${amount}`
             },
             redirect: "if_required"
-        })
-
+        });
+    
         if (error) {
             setError(error.message);
             setPaymentStatus('idle');
@@ -110,10 +192,11 @@ const StripeCheck = ({ amount }: { amount: number }) => {
             setError('');
             setPaymentStatus('Successed');
             setTimeout(() => {
-                router.push(`${URL}/payment-success?amount=${amount}`); // ✅ Next.js ka `router.push()` use kiya hai
-            },);
+                router.push(`${URL}/payment-success?amount=${amount}`);
+            }, 500);
         }
     };
+    
 
     return (
         <form onSubmit={handleSubmit} className='p-8'>
@@ -133,10 +216,7 @@ const StripeCheck = ({ amount }: { amount: number }) => {
                             className="w-full px-4 py-2 border border-gray-300 rounded-md"
                             placeholder='Enter your name.'
                             value={userName}
-                            onChange={(e) =>{ setUserName(e.target.value)
-                                console.log("new name",e.target.value);
-
-                            }}
+                            onChange={(e) => setUserName(e.target.value)}
                             required
                         />
                     </div>
@@ -149,11 +229,7 @@ const StripeCheck = ({ amount }: { amount: number }) => {
                             className="w-full px-4 py-2 border border-gray-300 rounded-md"
                             placeholder='Enter your email.'
                             value={userEmail}
-                            onChange={(e) =>{ setUserEmail(e.target.value)
-                                console.log("new name",e.target.value);
-                                
-                            }}
-                            
+                            onChange={(e) => setUserEmail(e.target.value)} 
                             required
                         />
                     </div>

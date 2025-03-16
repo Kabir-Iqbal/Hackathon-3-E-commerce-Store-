@@ -147,10 +147,10 @@ function Hero() {
                                         <div className='flex flex-col h-[375px] gap-4   bg-gray-100 shadow-sm shadow-black group cursor-pointer overflow-hidden ' >
 
                                             <div className='w-full mx-auto h-[80%] sm:h-[70%] ' >
-                                                <Image className=' w-full object-cover my-1 h-full group-hover:scale-105 duration-200 transition-transform ' src={`${product.image}`} alt={`${product.name}`} width={300} height={300} />
+                                                <Image className=' w-full  object-cover h-[180px] sm:h-[220px] md:h-72    group-hover:scale-105 duration-200 transition-transform ' src={`${product.image}`} alt={`${product.name}`} width={300} height={150} />
                                             </div>
 
-                                            <div className='text-sm gap-1 h-[20%] sm:h-[30%] text-[#2A254B] flex flex-col my-2 px-1 ' >
+                                            <div className='text-sm gap-1 h-[20%] sm:h-[30%] text-[#2A254B] flex flex-col my-5 px-1 ' >
                                                 {product.name}
                                                 <p  > {`$${ product.price} `} </p>
                                             </div>
@@ -163,7 +163,7 @@ function Hero() {
                     </div>
                 </div>
 
-                <Link href="/Error" >  <div className="flex justify-center mb-14 " >
+                <Link href="/productlisting" >  <div className="flex justify-center mb-14 " >
                     <button className="px-3 py-2 border-[1px] border-slate-300 justify-center " > View collection </button>
                 </div></Link>
 
@@ -183,10 +183,10 @@ function Hero() {
                                 return (
                             <Link href={`${product2.slug.current}`} key={product2.id}  >
                                 <div className=' w-[100%] h-[85%] flex flex-nowrap ' >
-                                    <Image className=' w-full object-cover   h-[320px] group-hover:scale-105 duration-200 transition-transform ' src={`${product2.image}`} alt={`${product2.name}`}  width={455} height={395} />
+                                    <Image className=' w-full object-cover  h-[180px] sm:h-[220px] md:h-[330px]  group-hover:scale-105 duration-200 transition-transform ' src={`${product2.image}`} alt={`${product2.name}`}  width={455} height={200} />
                                 </div>
 
-                                <div className='text-sm gap-1  text-[#2A254B] flex flex-col my-2 px-1 ' >
+                                <div className='text-sm gap-1  text-[#2A254B] flex flex-col my-3 px-1 ' >
                                       {product2.name}
                                     <p  > {`$${product2.price}`} </p>
                                 </div>
@@ -203,7 +203,7 @@ function Hero() {
                                         <Link href={`${product2.slug.current}`} key={product2.id} >
                                             <div className=' flex flex-col gap-3 h-[300px] sm:h-[338px] md:h-[450px]  bg-gray-100 shadow-sm shadow-black overflow-hidden group cursor-pointer ' >
                                                 <div className='w-full  mx-auto h-[70%] md:h-[80%] sm:h-[75%]' >
-                                                    <Image className=' w-full object-cover h-full group-hover:scale-105 duration-200 transition-transform' src={product2.image} alt="The Dandy chair" width={300} height={300} />
+                                                    <Image className=' w-full object-cover  h-[180px] sm:h-[220px] md:h-[330px]   group-hover:scale-105 duration-200 transition-transform' src={product2.image} alt="The Dandy chair" width={300} height={150} />
                                                 </div>
 
                                                 <div className='text-sm gap-1 h-[20%] sm:h-[25%] text-[#2A254B] flex flex-col my-2 px-1 ' >
@@ -223,7 +223,7 @@ function Hero() {
                 </div>
 
                 
-                <Link href="/Error" >
+                <Link href="/productlisting" >
                     <div className="flex justify-center mb-8" >
                         <button className="px-3 py-2 border-[1px] border-slate-300 justify-center " > View collection </button>
                     </div>
